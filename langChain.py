@@ -11,6 +11,7 @@ from lat import resume_content
 from dotenv import load_dotenv
 load_dotenv()
 print(type(resume_content))
+import lat1
 
 
 # Environment variable for API key
@@ -108,6 +109,9 @@ class ResumeSkills(BaseModel):
      jd:str
      skills:str
 
+class GenerateResumeInput(BaseModel):
+    skills: str
+
 # 5. App definition
 app = FastAPI(
   title="LangChain Server",
@@ -132,6 +136,7 @@ async def process_skills(input_data:ResumeSkills):
      skills = input_data.skills
      print(jd,skills)
      output = process_skills_chain(jd,skills)
+     lat1.resume_content["skills"] = [output]
      return {"output":output}
 
 @app.post("/processed_resume_content")
@@ -149,6 +154,12 @@ async def get_resume_content():
     # Return resume content dictionary
     return resume_content
 
+@app.post("/generate_resume")
+async def generate_resume(input_data: GenerateResumeInput):
+    skills = input_data.skills
+    lat1.resume_content["skills"] = [skills]
+    lat1.main()
+    return {"message": "Resume generated successfully"}
 
 if __name__ == "__main__":
     import uvicorn

@@ -81,6 +81,7 @@
         </div>
 
     </section>
+    <button class="button is-link" id="Generate_resume">Generate_resume</button>
 
     <script>
         var resume_content
@@ -141,7 +142,23 @@
                 document.getElementById('result').value = 'An error occurred while processing your request.';
             });
         });
+        document.getElementById('Generate_resume').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const processedSkills = document.getElementById('processed_resume_skills').value;
 
+            axios.post('/generate_resume', {
+                skills: processedSkills
+            })
+            .then(function (response) {
+                console.log("Resume generated successfully");
+                alert("Resume generated successfully");
+            })
+            .catch(function (error) {
+                console.error('Error:', error);
+                alert('An error occurred while generating the resume.');
+            });
+        });
     </script>
 </body>
 </html>
