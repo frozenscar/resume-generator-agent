@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Content Processor</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Project Content Processor</h1>
+            <div class="columns">
+                <!-- Left Column for the Form -->
+                <div class="column is-half">
+                    <form id="processorForm">
+                        <div class="field">
+                            <label for="jd" class="label">Job Description:</label>
+                            <div class="control">
+                                <textarea id="jd" class="textarea is-link" placeholder="Enter job description" rows="10"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="project_content" class="label">Project Content:</label>
+                            <div class="control">
+                                <textarea id="project_content" class="textarea is-link" placeholder="Enter project content" rows="10"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="control has-text-centered">
+                            <button class="button is-link" type="submit">Process</button>
+                        </div>
+                    </form>
+
+                    
+
+                </div>
+                
+                
+                <!-- Right Column for the Result -->
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="result" class="label">Processed Result:</label>
+                        <div class="control">
+                            <textarea id="result" class="textarea" placeholder="Your processed result will appear here..." rows="20"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-half">
+            </div>   
+        </div>
+    </section>
+    <section>
+        <div class="container">
+        <div class="columns">
+            <!-- Left Column for the Form -->
+            <div class="column is-half">
+                <div class="field">
+                    <label for="resume_skills" class="label">Resume Skills:</label>
+                    <div class="control">
+                        <textarea id="resume_skills" class="textarea" placeholder="Resume skills" rows="5" readonly></textarea>
+                    </div>
+                </div>
+                <div class="control has-text-centered">
+                    <button class="button is-link" id="process_skills_button">Process skills</button>
+                </div>
+                
+            </div>
+            <!-- Right Column for the Form -->
+            <div class="column is-half">
+                <div class="field">
+                    <label for="processed_resume_skills" class="label">Resume Skills:</label>
+                    <div class="control">
+                        <textarea id="processed_resume_skills" class="textarea" placeholder="Resume skills" rows="5"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+    </section>
+
+    <script>
+        var resume_content
+        document.addEventListener('DOMContentLoaded', function() {
+            axios.get('/resume')
+            .then(function (response) {
+                // Display the resume content in the textarea
+                document.getElementById('resume_skills').value = response.data.skills;
+                resume_content = response.data;
+                console.log(resume_content);
+            })
+            .catch(function (error) {
+                console.error('Error:', error);
+                document.getElementById('resume_skills').value = 'An error occurred while fetching the resume content.';
+            });
+        });
+        
+        document.getElementById('processorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const jd = document.getElementById('jd').value;
+            const project_content = document.getElementById('project_content').value;
+
+            // Display a loading message in the textarea
+            document.getElementById('result').value = 'Processing...';
+
+            axios.post('/process', {
+                jd: jd,
+                project_content: project_content
+            })
+            .then(function (response) {
+                // Display the result in the textarea
+                document.getElementById('result').value = response.data.output.content;
+            })
+            .catch(function (error) {
+                console.error('Error:', error);
+                document.getElementById('result').value = 'An error occurred while processing your request.';
+            });
+        });
+
+        document.getElementById('process_skills_button').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const jd = document.getElementById('jd').value;
+            const pr_skills= document.getElementById('resume_skills').value;
+
+            axios.post('/process_skills', {
+                jd:jd,
+                skills: pr_skills
+            })
+            .then(function (response) {
+                // Display the result in the textarea
+                document.getElementById('processed_resume_skills').value = response.data.output.content;
+                console.log("recievedddd")
+            })
+            .catch(function (error) {
+                console.error('Error:', error);
+                document.getElementById('result').value = 'An error occurred while processing your request.';
+            });
+        });
+
+    </script>
+</body>
+</html>
