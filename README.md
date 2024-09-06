@@ -49,7 +49,7 @@ cd ai-resume-generator
 4. Click "Generate Resume" and resume.pdf will be generated!
 5. Review and use your tailored resume.
 
-   ![Screen Recording 2024-09-05 at 9 12 15 PM](https://github.com/user-attachments/assets/9928727f-c8c8-4427-81d3-56e440c5842d)
+   ![Screen Recording 2024-09-05 at 9 12 15 PM (3)](https://github.com/user-attachments/assets/f9f227d9-d7f5-408f-bd5f-7e38d75dd73f)
 
 
 ## 🔧 Technologies Used
