@@ -5,11 +5,9 @@ Creates tailored job specific resume based on job description and your current r
 
 ## ✨ Features
 
-- 📊 Intelligent job description analysis
 - 📄 Automatic resume restructuring and rewording
 - 🎯 Tailored content focusing on job requirements
 - 🖥️ User-friendly interface for easy resume generation
-- 🔧 Customizable output options
 
 ## 🛠️ How It Works
 
