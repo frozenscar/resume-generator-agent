@@ -1,15 +1,5 @@
 # ✨🚀 AI-Powered Resume Generator ✨
 
-## 📌 Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [How It Works](#how-it-works)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Technologies Used](#technologies-used)
-- [Contributing](#contributing)
-
-
 ## 🔭 Overview
 
 Welcome to the AI-Powered Resume Generator! This innovative tool leverages the power of Large Language Models (LLMs) and LangChain to revolutionize the way you create tailored resumes for job applications. Say goodbye to hours of manual resume tweaking and hello to instant, job-specific resume optimization!
