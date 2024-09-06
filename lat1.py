@@ -4,8 +4,8 @@ from pylatex.utils import bold
 # Define the resume content
 resume_content = {
     "name": "Venkateshwar Reddy Darmanola",
-    "email": "venkat.re47@gmail.com",
-    "phone": "4698618663",
+    "email": "email",
+    "phone": "Phone number",
     "portfolio": "https://www.github.com/frozenscar",
     "linkedin": "https://www.linkedin.com/in/venkateshwar-reddy-darmanola-a056a1179",
     "skills": [

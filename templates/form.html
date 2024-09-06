@@ -22,75 +22,72 @@
                             </div>
                         </div>
 
-                        <div class="field">
-                            <label for="project_content" class="label">Project Content:</label>
-                            <div class="control">
-                                <textarea id="project_content" class="textarea is-link" placeholder="Enter project content" rows="10"></textarea>
-                            </div>
-                        </div>
+                        
 
                         <div class="control has-text-centered">
-                            <button class="button is-link" type="submit">Process</button>
+                            <button class="button is-link" type="submit">Process All</button>
                         </div>
                     </form>
-
-                    
-
                 </div>
-                
                 
                 <!-- Right Column for the Result -->
                 <div class="column is-half">
                     <div class="field">
                         <label for="result" class="label">Processed Result:</label>
                         <div class="control">
-                            <textarea id="result" class="textarea" placeholder="Your processed result will appear here..." rows="20"></textarea>
+                            <textarea id="result" class="textarea" placeholder="Your processed result will appear here..." rows="10"></textarea>
                         </div>
                     </div>
                 </div>
-                <div class="column is-half">
             </div>   
         </div>
     </section>
+
     <section>
         <div class="container">
-        <div class="columns">
-            <!-- Left Column for the Form -->
-            <div class="column is-half">
-                <div class="field">
-                    <label for="resume_skills" class="label">Resume Skills:</label>
-                    <div class="control">
-                        <textarea id="resume_skills" class="textarea" placeholder="Resume skills" rows="5" readonly></textarea>
+            <div class="columns">
+                <!-- Left Column for the Form -->
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="resume_skills" class="label">Resume Skills:</label>
+                        <div class="control">
+                            <textarea id="resume_skills" class="textarea" placeholder="Resume skills" rows="5" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="control has-text-centered">
+                        <button class="button is-link" id="process_skills_button">Process skills</button>
                     </div>
                 </div>
-                <div class="control has-text-centered">
-                    <button class="button is-link" id="process_skills_button">Process skills</button>
-                </div>
-                
-            </div>
-            <!-- Right Column for the Form -->
-            <div class="column is-half">
-                <div class="field">
-                    <label for="processed_resume_skills" class="label">Resume Skills:</label>
-                    <div class="control">
-                        <textarea id="processed_resume_skills" class="textarea" placeholder="Resume skills" rows="5"></textarea>
+                <!-- Right Column for the Form -->
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="processed_resume_skills" class="label">Processed Resume Skills:</label>
+                        <div class="control">
+                            <textarea id="processed_resume_skills" class="textarea" placeholder="Processed resume skills" rows="5"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
-
     </section>
-    <button class="button is-link" id="Generate_resume">Generate_resume</button>
+    <div id="projectsContainer">
+        <!-- Project sections will be dynamically added here -->
+    </div>
+
+    <div class="container">
+        <button class="button is-link" id="Generate_resume">Generate Resume</button>
+    </div>
 
     <script>
-        var resume_content
+        var resume_content;
+        var processedProjects = {};
+
         document.addEventListener('DOMContentLoaded', function() {
             axios.get('/resume')
             .then(function (response) {
-                // Display the resume content in the textarea
-                document.getElementById('resume_skills').value = response.data.skills;
                 resume_content = response.data;
+                document.getElementById('resume_skills').value = resume_content.skills.join(', ');
+                populateProjects(resume_content.projects);
                 console.log(resume_content);
             })
             .catch(function (error) {
@@ -98,57 +95,110 @@
                 document.getElementById('resume_skills').value = 'An error occurred while fetching the resume content.';
             });
         });
-        
-        document.getElementById('processorForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const jd = document.getElementById('jd').value;
-            const project_content = document.getElementById('project_content').value;
 
-            // Display a loading message in the textarea
-            document.getElementById('result').value = 'Processing...';
+        function populateProjects(projects) {
+            const container = document.getElementById('projectsContainer');
+            projects.forEach((project, index) => {
+                const projectSection = document.createElement('div');
+                projectSection.innerHTML = `
+                <div class="box">
+                <div class="columns">
+                    <div class="column is-half">
+                        <div class="field">
+                            <label for="project_${index}" class="label">${project.title}:</label>
+                            <div class="control">
+                                <textarea id="project_${index}" class="textarea is-link" rows="5" readonly>${project.description}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-half">
+                        <div class="field">
+                            <label for="processed_project_${index}" class="label">Processed ${project.title}:</label>
+                            <div class="control">
+                                <textarea id="processed_project_${index}" class="textarea" rows="5" placeholder="Processed project content will appear here..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="control has-text-centered">
+                        <button class="button is-link process-project" data-index="${index}">Process Project</button>
+                    </div>
+                </div>
+                `;
+                container.appendChild(projectSection);
+                processedProjects[index] = project.description;
+            });
+
+            // Add event listeners to process project buttons
+            document.querySelectorAll('.process-project').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const index = this.getAttribute('data-index');
+                    processProject(index);
+                });
+            });
+        }
+
+        function processProject(index) {
+            const jd = document.getElementById('jd').value;
+            const project_content = document.getElementById(`project_${index}`).value;
 
             axios.post('/process', {
                 jd: jd,
                 project_content: project_content
             })
             .then(function (response) {
-                // Display the result in the textarea
-                document.getElementById('result').value = response.data.output.content;
+                const processedContent = response.data.output.content;
+                document.getElementById(`processed_project_${index}`).value = processedContent;
+                processedProjects[index] = processedContent;
             })
             .catch(function (error) {
                 console.error('Error:', error);
-                document.getElementById('result').value = 'An error occurred while processing your request.';
+                document.getElementById(`processed_project_${index}`).value = 'An error occurred while processing your request.';
             });
-        });
+        }
+
+        document.getElementById('processorForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Process all projects
+    document.querySelectorAll('.process-project').forEach(button => {
+        const index = button.getAttribute('data-index');
+        processProject(index);
+    });
+
+    // Process skills
+    document.getElementById('process_skills_button').click();
+});
 
         document.getElementById('process_skills_button').addEventListener('click', function(e) {
             e.preventDefault();
             
             const jd = document.getElementById('jd').value;
-            const pr_skills= document.getElementById('resume_skills').value;
+            const pr_skills = document.getElementById('resume_skills').value;
 
             axios.post('/process_skills', {
-                jd:jd,
+                jd: jd,
                 skills: pr_skills
             })
             .then(function (response) {
-                // Display the result in the textarea
                 document.getElementById('processed_resume_skills').value = response.data.output.content;
-                console.log("recievedddd")
             })
             .catch(function (error) {
                 console.error('Error:', error);
-                document.getElementById('result').value = 'An error occurred while processing your request.';
+                document.getElementById('processed_resume_skills').value = 'An error occurred while processing your request.';
             });
         });
+
         document.getElementById('Generate_resume').addEventListener('click', function(e) {
             e.preventDefault();
             
             const processedSkills = document.getElementById('processed_resume_skills').value;
+            const processedProjectsArray = Object.values(processedProjects);
 
             axios.post('/generate_resume', {
-                skills: processedSkills
+                skills: processedSkills,
+                projects: processedProjectsArray
             })
             .then(function (response) {
                 console.log("Resume generated successfully");

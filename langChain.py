@@ -76,7 +76,8 @@ projects_template= PromptTemplate(
 model = ChatOpenAI(
     base_url="https://api.together.xyz/v1",
     api_key=os.environ["TOGETHER_API_KEY"],
-    model="mistralai/Mixtral-8x7B-Instruct-v0.1",
+    #model="mistralai/Mixtral-8x7B-Instruct-v0.1",
+    model="meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"
 )
 
 # 3. Create parser
@@ -111,6 +112,7 @@ class ResumeSkills(BaseModel):
 
 class GenerateResumeInput(BaseModel):
     skills: str
+    projects:list
 
 # 5. App definition
 app = FastAPI(
@@ -157,7 +159,14 @@ async def get_resume_content():
 @app.post("/generate_resume")
 async def generate_resume(input_data: GenerateResumeInput):
     skills = input_data.skills
+    projects = input_data.projects
+    print(projects)
     lat1.resume_content["skills"] = [skills]
+    for i, project in enumerate(lat1.resume_content["projects"]):
+        if i < len(projects):
+            project['description'] = projects[i]
+            lat1.resume_content["projects"][i]['description'] = projects[i]
+    
     lat1.main()
     return {"message": "Resume generated successfully"}
 
