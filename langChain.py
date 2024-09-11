@@ -8,10 +8,12 @@ import os
 from pydantic import BaseModel
 from fastapi.responses import FileResponse
 from lat import resume_content
+#from lat1 import resume_content
+import lat1
 from dotenv import load_dotenv
 load_dotenv()
 print(type(resume_content))
-import lat1
+
 
 
 # Environment variable for API key
@@ -45,8 +47,8 @@ rearrange the skills based on the Job description. Make it appealing to the recr
 output should be comma separated skills.
 '''
 projects_template_content = '''
-Given the project {project_content}
-Rewrite the project description such that it is more aligned with job description.
+This is a work that I did alone when I was free, {project_content}
+Rewrite the description such that it is more aligned with job description so that I can put it in projects section of my resume.
 Make it very appealing to the recruiter.
 output should a single paragraph less than 100 words.
 '''
@@ -76,8 +78,8 @@ projects_template= PromptTemplate(
 model = ChatOpenAI(
     base_url="https://api.together.xyz/v1",
     api_key=os.environ["TOGETHER_API_KEY"],
-    #model="mistralai/Mixtral-8x7B-Instruct-v0.1",
-    model="meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"
+    model="mistralai/Mixtral-8x7B-Instruct-v0.1",
+    #model="meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"
 )
 
 # 3. Create parser

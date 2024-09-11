@@ -4,8 +4,8 @@ from pylatex.utils import bold
 # Define the resume content
 resume_content = {
     "name": "Venkateshwar Reddy Darmanola",
-    "email": "email",
-    "phone": "Phone number",
+    "email": "venkat.re47@gmail.com",
+    "phone": "4698618663",
     "portfolio": "https://www.github.com/frozenscar",
     "linkedin": "https://www.linkedin.com/in/venkateshwar-reddy-darmanola-a056a1179",
     "skills": [
@@ -46,6 +46,10 @@ resume_content = {
         }
     ],
     "projects": [
+        {
+            "title": "Automatic resume generator",
+            "description": "Given Job descripton and user's current resume, it creates a new resume specific to the job. It rearranges the skills and highlights the main keywords given in the job description."
+        },
         {
             "title": "AI agent for diet",
             "description": "Using LangChain, designed an AI agent chatbot to analyze and assist users using diet data stored in a PostgreSQL database. The AI agent can retrieve and process dietary information through various tools, including date-specific queries and custom SQL executions. Additionally, a user-friendly interface, built with Express.js, provides RESTful API endpoints to add, retrieve, update, and delete user meal records. The AI agent intelligently interacts with this database, ensuring accurate and responsive dietary tracking, while the UI facilitates seamless data management in real-time."
