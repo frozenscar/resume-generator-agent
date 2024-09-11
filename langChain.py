@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from fastapi import FastAPI, Request
+from langchain_core.pydantic_v1 import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
@@ -15,6 +16,11 @@ load_dotenv()
 print(type(resume_content))
 
 
+class Extract_JD(BaseModel):
+    requires_citizenship : str = Field("Does the job require US citizenship to apply for the job? Answer yes, no or not sure. Give the part in job description where it mentions that it requires or doesn't require citizenship ")
+    profile_relevance : str = Field("Write a cover letter based on this job description and user profile")
+
+    
 
 # Environment variable for API key
 os.environ["TOGETHER_API_KEY"] = os.getenv('together_api')
@@ -54,6 +60,8 @@ output should a single paragraph less than 100 words.
 '''
 
 
+
+
 # 1. Create prompt template
 system_template = '''
 given the professional background of the user, {user_bg}
@@ -74,6 +82,8 @@ projects_template= PromptTemplate(
      input_variables=["user_bg","jd","project_content"]
 )
 
+
+
 # 2. Create model
 model = ChatOpenAI(
     base_url="https://api.together.xyz/v1",
@@ -85,6 +95,13 @@ model = ChatOpenAI(
 # 3. Create parser
 parser = StrOutputParser()
 
+
+def process_JD(jd:str):
+    structured_llm = model.with_structured_output(Extract_JD)
+    
+    promp_val = system_template.invoke({"user_bg":user_bg, "jd":jd})
+    response = structured_llm.invoke(promp_val)
+    return response
 # 4. Define chain
 def process_project_chain(jd: str, project_content: str):
     # Fill the prompt with user-provided data
@@ -116,6 +133,9 @@ class GenerateResumeInput(BaseModel):
     skills: str
     projects:list
 
+class ExtractJDInput(BaseModel):
+    jd:str
+
 # 5. App definition
 app = FastAPI(
   title="LangChain Server",
@@ -133,6 +153,16 @@ async def process_input(input_data: InputData):
     # Run the chain with user-provided JD and project content
     output = process_project_chain(jd, project_content)
     return {"output": output}
+
+@app.post("/process_jd")
+async def process_jd(input_data: ExtractJDInput):
+    # Get data from the request body
+    jd = input_data.jd
+    
+    # Run the chain with user-provided JD and project content
+    output = process_JD(jd)
+    op = f"requires citizenship? : {output.requires_citizenship} \n how relevant is the job to user profile: {output.profile_relevance}"
+    return {"output": op}
 
 @app.post("/process_skills")
 async def process_skills(input_data:ResumeSkills):
