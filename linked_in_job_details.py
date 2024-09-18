@@ -14,6 +14,7 @@ def get_job_data(job_link="https://www.linkedin.com/jobs/view/4025823296"):
     options = Options()
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--headless")
 
     # Use your Google profile
     user_data_dir = "/Users/venkateshwarreddy/Library/Application Support/Google/Chrome/Default"
@@ -86,8 +87,37 @@ def get_job_data(job_link="https://www.linkedin.com/jobs/view/4025823296"):
     finally:
         # Keep the browser open for 10 seconds to see the result
         import time
-        time.sleep(10)
+        time.sleep(3)
         driver.quit()
-    return [title,posted_time,description]
+    return [title,posted_time,description,job_link]
+
+def save_to_csv(data, path="jobs.csv"):
+    columns = ["Job Title", "Posted Time", "Description", "link"]
+
+    # Check if the file exists
+    if os.path.exists(path):
+        # Load existing data
+        df_existing = pd.read_csv(path)
+
+        # Check if the job link already exists
+        if data[3] in df_existing['link'].values:
+            print("Job link already exists, data not appended.")
+            return
+        else:
+            # Append the new data
+            df_new = pd.DataFrame([data], columns=columns)
+            df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+            df_combined.to_csv(path, index=False)
+            print(f"Data appended to {path}")
+    else:
+        # Create a new CSV file
+        df = pd.DataFrame([data], columns=columns)
+        df.to_csv(path, index=False)
+        print(f"New file created and data saved to {path}")
+
+
+
 if __name__ == "__main__":
-    print(get_job_data())
+    data = get_job_data()
+    save_to_csv(data)
+    print()

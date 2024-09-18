@@ -169,6 +169,7 @@ async def process_jd(input_data: ExtractJDInput):
     op = f"requires citizenship? : {output.requires_citizenship} \n how relevant is the job to user profile: {output.profile_relevance}"
     return {"output": op}
 
+jobDetails = []
 @app.post("/linkedinlink")
 async def process_jd(input_data: ExtractLinkedinlink):
     # Get data from the request body
@@ -176,8 +177,13 @@ async def process_jd(input_data: ExtractLinkedinlink):
     link = input_data.link
     print(link)
     job_details = linked_in_job_details.get_job_data(link)
+    jobDetails.append(job_details)
     return {"job_title":job_details[0] , "job_time_since":job_details[1], "job_description":job_details[2]}
 
+@app.post("/save_to_csv")
+async def save_to_csv():
+    print(jobDetails[0], "abcdeads s")
+    linked_in_job_details.save_to_csv(jobDetails[0])
 
 @app.post("/process_skills")
 async def process_skills(input_data:ResumeSkills):
