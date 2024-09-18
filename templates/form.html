@@ -11,6 +11,13 @@
     <section class="section">
         <div class="container">
             <h1 class="title">Project Content Processor</h1>
+            <div class="control">
+                <textarea id="linkedin_link" class="textarea is-link" placeholder="Enter linkedin job link" rows="1"></textarea>
+            </div>
+            <br>
+            <div class="control has-text-centered">
+                <button class="button is-link" id ="linkedin-button">extract job details</button>
+            </div>
             <div class="columns">
                 <!-- Left Column for the Form -->
                 <div class="column is-half">
@@ -188,6 +195,25 @@ document.getElementById('jd_process_button').addEventListener('click', function(
             .catch(function (error) {
                 console.error('Error:', error);
                 document.getElementById('processed_resume_skills').value = 'An error occurred while processing your request.';
+            });
+        });
+
+        document.getElementById('linkedin-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const linkedin_link = document.getElementById('linkedin_link').value;
+            
+
+            axios.post('/linkedinlink', {
+                link: linkedin_link, 
+            })
+            .then(function (response) {
+                document.getElementById('jd').value = response.data.job_description
+                document.getElementById('result').value = response.data.job_title;
+            })
+            .catch(function (error) {
+                console.error('Error:', error);
+                document.getElementById('linkedin-button').value = 'An error occurred while processing your request.';
             });
         });
 

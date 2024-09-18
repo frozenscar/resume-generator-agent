@@ -12,6 +12,8 @@ from lat import resume_content
 #from lat1 import resume_content
 import lat1
 from dotenv import load_dotenv
+import linked_in_job_details
+
 load_dotenv()
 print(type(resume_content))
 
@@ -136,6 +138,9 @@ class GenerateResumeInput(BaseModel):
 class ExtractJDInput(BaseModel):
     jd:str
 
+class ExtractLinkedinlink(BaseModel):
+    link:str
+
 # 5. App definition
 app = FastAPI(
   title="LangChain Server",
@@ -163,6 +168,16 @@ async def process_jd(input_data: ExtractJDInput):
     output = process_JD(jd)
     op = f"requires citizenship? : {output.requires_citizenship} \n how relevant is the job to user profile: {output.profile_relevance}"
     return {"output": op}
+
+@app.post("/linkedinlink")
+async def process_jd(input_data: ExtractLinkedinlink):
+    # Get data from the request body
+    
+    link = input_data.link
+    print(link)
+    job_details = linked_in_job_details.get_job_data(link)
+    return {"job_title":job_details[0] , "job_time_since":job_details[1], "job_description":job_details[2]}
+
 
 @app.post("/process_skills")
 async def process_skills(input_data:ResumeSkills):
