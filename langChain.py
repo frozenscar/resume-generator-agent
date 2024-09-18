@@ -140,6 +140,8 @@ class ExtractJDInput(BaseModel):
 
 class ExtractLinkedinlink(BaseModel):
     link:str
+class ExtractResume(BaseModel):
+    res:str
 
 # 5. App definition
 app = FastAPI(
@@ -181,12 +183,18 @@ async def process_jd(input_data: ExtractLinkedinlink):
     return {"job_title":job_details[0] , "job_time_since":job_details[1], "job_description":job_details[2]}
 
 @app.post("/save_to_csv")
-async def save_to_csv():
+async def save_to_csv(input_data: ExtractResume):
+    print("vvvv")
+    res = input_data.res
+    jobDetails[0].append(res)
+    jobDetails[0].append("Waiting")
     print(jobDetails[0], "abcdeads s")
     linked_in_job_details.save_to_csv(jobDetails[0])
+    return 
 
 @app.post("/process_skills")
 async def process_skills(input_data:ResumeSkills):
+     
      jd = input_data.jd
      skills = input_data.skills
      print(jd,skills)
@@ -208,6 +216,16 @@ async def UI():
 async def get_resume_content():
     # Return resume content dictionary
     return resume_content
+
+
+@app.get("/populate_resumes")
+async def get_resume_content():
+    directory_path = 'resumes'
+    files = os.listdir(directory_path)
+    #print(files, "xyzz")
+    return {
+        "resumes": files
+    }
 
 @app.post("/generate_resume")
 async def generate_resume(input_data: GenerateResumeInput):

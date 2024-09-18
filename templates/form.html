@@ -15,6 +15,19 @@
                 <textarea id="linkedin_link" class="textarea is-link" placeholder="Enter linkedin job link" rows="1"></textarea>
             </div>
             <br>
+            <div class="container">
+                <div class="field">
+                    <label class="label">Select resume</label>
+                    <div class="control">
+                        <div class="select">
+                            <select id="fileDropdown">
+                                <option value="">Select resume</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="control has-text-centered">
                 <button class="button is-link" id ="linkedin-button">extract job details</button>
             </div>
@@ -222,11 +235,8 @@ document.getElementById('jd_process_button').addEventListener('click', function(
 
         document.getElementById('save_to_csv-button').addEventListener('click', function(e) {
             e.preventDefault();
-            
-            
-            
-
             axios.post('/save_to_csv', {
+                res:document.getElementById("fileDropdown").value
                 
             })
             .then(function (response) {
@@ -257,6 +267,7 @@ document.getElementById('jd_process_button').addEventListener('click', function(
             });
         });
 
+
         document.getElementById('Generate_resume').addEventListener('click', function(e) {
             e.preventDefault();
             
@@ -275,6 +286,26 @@ document.getElementById('jd_process_button').addEventListener('click', function(
                 console.error('Error:', error);
                 alert('An error occurred while generating the resume.');
             });
+        });
+        function populateDropdownWithFiles(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            axios.get('/populate_resumes')
+                .then(function (response) {
+                    response.data.resumes.forEach(file => {
+                        const option = document.createElement('option');
+                        option.value = file;
+                        option.text = file;
+                        dropdown.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching files:', error);
+                });
+        }
+
+        // Populate the dropdown when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            populateDropdownWithFiles('fileDropdown');
         });
     </script>
 </body>

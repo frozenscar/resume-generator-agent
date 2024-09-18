@@ -92,7 +92,7 @@ def get_job_data(job_link="https://www.linkedin.com/jobs/view/4025823296"):
     return [title,posted_time,description,job_link]
 
 def save_to_csv(data, path="jobs.csv"):
-    columns = ["Job Title", "Posted Time", "Description", "link"]
+    columns = ["Job Title", "Posted Time", "Description", "link","resume","status"]
 
     # Check if the file exists
     if os.path.exists(path):
