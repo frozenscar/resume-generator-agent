@@ -10,14 +10,14 @@ Creates tailored job specific resume based on job description and your current r
 - 📄 Automatic resume restructuring and rewording
 - 🎯 Tailored content focusing on job requirements
 - 🖥️ User-friendly interface for easy resume generation
+- Saves jobs in CSV for job  tracking
 
 ## 🛠️ How It Works
 
-1. **Input**: User provides the job description and their current resume.
-2. **Analysis**: LLMs powered by LangChain analyze the job description to identify key requirements and preferred skills.
-3. **Optimization**: The AI engine restructures and rewords the original resume to align with the job description.
-4. **Generation**: A new, tailored resume is created, emphasizing relevant skills and experiences.
-5. **Output**: The optimized resume is presented to the user through an intuitive UI.
+1. **Input**: User provides the linkedin link of a job or job description, and their current resume.
+2. **Optimization**: LLM rewords the original resume to align with the job description.
+3. **Generation**: A tailored resume and cover letter are generated, emphasizing relevant skills and experiences.
+5. **Job Tracking**: The job is saved in a CSV to track job applications.
 
 ## 🚀 Installation
 
