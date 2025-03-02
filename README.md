@@ -22,7 +22,7 @@ Creates tailored job specific resume based on job description and your current r
 ## 🚀 Installation
 
 ```bash
-git clone https://github.com/yourusername/ai-resume-generator.git
+git clone https://github.com/frozenscar/resume-generator-agent.git
 cd ai-resume-generator
 
 ```
